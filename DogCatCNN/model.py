@@ -110,11 +110,11 @@ def get_image(x):
 
 # adjust figure size here for images    
 plt.figure(figsize=(5,5))
-plt.subplots_adjust(bottom=3, top=6)
 
 # Plot 10 images with their expected labels.
 for x in range(1,11):
     plot_label = label[np.argmax(model.predict(get_training_data(x)))]
-    plt.subplot(5,2,x).set_title(plot_label)
+    plt.plot(x)
+    plt.title(plot_label)
     plt.imshow(get_image(x))
     plt.show()
