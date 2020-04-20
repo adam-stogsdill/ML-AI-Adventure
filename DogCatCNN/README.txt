@@ -14,3 +14,18 @@ Preprocessing Stage:
 	as the data is trained stochastically anyway
 
 Structure of the Model.
+
+Required Input: 3-Dimensional (300x300x1) This algorithms trains stochastically to avoid bias in either label.
+Layer 1: 2D-Convolutional Layer, 32 filters, kernel_size = (3x3), stride = 1, padding = same, activation_function = relu
+Layer 2: Max Pooling Layer (2x2)
+Layer 3: 2D-Convolutional Layer, 32 filters, kernel_size = (3x3), stride = 1, padding = same, activation_function = relu
+Layer 4: Flatten Layer
+Layer 5: Dropout Layer (40% dropout rate)
+Layer 6: Dense Layer (1024 Neurons, activation_function = relu)
+Layer 7: Dropout Layer (40% dropout rate)
+Layer 8: Dense Layer (512 Neurons, activation_function = relu)
+Output Layer: Dense Layer (2, activation_function = softmax)
+
+Model uses the Adam optimization algorithm, (https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adam),
+the Sparse Categorical Entropy loss function, (https://www.tensorflow.org/api_docs/python/tf/keras/losses/SparseCategoricalCrossentropy),
+and looking at accuracy as the prime metric.
