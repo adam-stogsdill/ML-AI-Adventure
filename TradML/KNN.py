@@ -18,11 +18,11 @@ class KNN():
 
     def cal_dist(self, x, x_o):
         # by default use euclidean distance
-        assert x.shape[0] == 1
-        assert x.shape[1] == x_o.shape[1]
+        if str(type(x_o)) == "<class 'numpy.ndarray'>":
+            x_o = np.asarray(x_o)
         dist = 0
-        for i in x.shape[1]:
-            dist = (x[0][i] - x_o[0][i]) ** 2
+        for i in range(x.shape[0]):
+            dist += (x[i] - x_o[i]) ** 2
         return dist ** (1/2)
 
 
@@ -42,6 +42,10 @@ def run_KNN_tests():
     assert np.array_equal(model.dataset, dataset)
     model.set_dataset(dataset)
     assert str(type(model.dataset)) == "<class 'numpy.ndarray'>"
+
+    # Testing Distance Calculation
+    new_data_point = np.asarray([1,2,3])
+    assert model.cal_dist(model.dataset[0], new_data_point) == 0
 
     # Completed all tests
     print("KNN TESTING COMPLETED!")
