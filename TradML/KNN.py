@@ -1,10 +1,14 @@
 import numpy as np
+from sklearn.neighbors import KNeighborsClassifier
 
 class KNN():
 
-    def __init__(self, model_name):
+    def __init__(self, model_name, p_value=2, k_value=3, model_type='classification'):
         self.model_name = model_name
         self.dataset = None
+        self.p_value = p_value
+        self.k_value = k_value
+        self.model_type = model_type
 
     def set_dataset(self, data, numpy_array=True):
         if not numpy_array:
@@ -13,17 +17,25 @@ class KNN():
             self.dataset = data
 
     def predict(self, data, append=False):
-        for row in data:
-            pass 
+        distances = dict()
+        for index, row in enumerate(self.dataset):
+            distances[index] = self.cal_dist(row[:-1], data)
+        final_distances = dict(sorted(distances.items(), key=lambda item: item[1]))
+        k_classes = self.get_classes(list(final_distances.keys())[:self.k_value])
+        return k_classes, max(k_classes, key=k_classes.count) 
+
+    def get_classes(self, data):
+        assert len(data) == self.k_value
+        return [self.dataset[row,-1] for row in data]
 
     def cal_dist(self, x, x_o):
         # by default use euclidean distance
-        if str(type(x_o)) == "<class 'numpy.ndarray'>":
+        if str(type(x_o)) != "<class 'numpy.ndarray'>":
             x_o = np.asarray(x_o)
         dist = 0
         for i in range(x.shape[0]):
-            dist += (x[i] - x_o[i]) ** 2
-        return dist ** (1/2)
+            dist += (abs(x[i] - x_o[i])) ** self.p_value
+        return dist ** (1/self.p_value)
 
 
 def run_KNN_tests():
@@ -46,6 +58,12 @@ def run_KNN_tests():
     # Testing Distance Calculation
     new_data_point = np.asarray([1,2,3])
     assert model.cal_dist(model.dataset[0], new_data_point) == 0
+
+    # create dataset
+    dataset = np.asarray([[0,1,0],[0,.8,0],[0,0.6,0],[.4,.4,0],[1,0,1],[.8,0,1],[.6,.2,1],[.7,.2,1]])
+    model.dataset = dataset
+    print(model.predict([.5, .1]))
+    print(model.predict([.3, .6]))
 
     # Completed all tests
     print("KNN TESTING COMPLETED!")
