@@ -16,13 +16,17 @@ class KNN():
         else:
             self.dataset = data
 
-    def predict(self, data, append=False):
+    def predict(self, data, append=False, extra_stats=False):
         distances = dict()
         for index, row in enumerate(self.dataset):
             distances[index] = self.cal_dist(row[:-1], data)
         final_distances = dict(sorted(distances.items(), key=lambda item: item[1]))
-        k_classes = self.get_classes(list(final_distances.keys())[:self.k_value])
-        return k_classes, max(k_classes, key=k_classes.count) 
+        if self.model_type == "classification":
+            k_classes = self.get_classes(list(final_distances.keys())[:self.k_value])
+            return k_classes, max(k_classes, key=k_classes.count)
+        else:
+            k_values = self.get_classes(list(final_distances.keys())[:self.k_value])
+            return k_values, sum(k_values) / len(k_values)
 
     def get_classes(self, data):
         assert len(data) == self.k_value
